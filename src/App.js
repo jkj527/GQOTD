@@ -18,6 +18,22 @@ function App() {
   const [shimmerText, setShimmerText] = useState(false);
   const [shakeContainer, setShakeContainer] = useState(false);
 
+  const easterEgg = `
+    Oh good, you found the easter egg.
+
+    🌒🔮🌀
+
+    Whispers of twilight cascade through the velvet echoes, where shadows pirouette on the fringes of forgotten murmurs. The clockwork nebula breathes in kaleidoscopic sighs, unraveling the tapestry of time with tendrils of translucent whispers. Quantum hiccups ripple across the spectrum of surreal dusk, entwining with the serpentine strands of ethereal cobwebs spun by moonlit specters. Beneath the canopy of indigo enigmas, crab claws clutch at the remnants of crystalline illusions, stitching seams of shimmering silence into the fabric of nonsensical reveries.
+
+    Fractured dreams dissolve into the mosaic of paradoxical echoes, dancing with the ephemeral essence of liquid stardust. The labyrinthine corridors of abstract infinity spiral into vortices of perplexing phosphorescence, where the scent of forgotten melodies permeates the air with invisible tendrils. Celestial marionettes sway to the dissonant cadence of unseen orchestrations, their strings tangled in the whimsical whimsy of cosmic caprices.
+
+    In the realm where the tangible transmutes into translucent whispers, the cacophony of fragmented echoes hums the lullabies of distorted realities. Tendrils of incandescent confusion weave through the tapestry of oblivious oblivion, casting shadows of spectral serenades upon the canvas of perpetual perplexity. The silent symphony of shattered serenades resonates with the melancholic murmur of timeless turbulence, where the essence of nothingness tangles with the threads of chaotic clarity.
+
+    As the nebulous night unfurls its enigmatic embrace, the whispers of forgotten echoes entwine with the shadows of the unseen abyss, where time fractures into kaleidoscopic shards of perplexing enigmas. Beneath the veil of silent chaos, spectral anomalies drift through the void of uncharted dimensions, cascading into the labyrinth of perpetual uncertainty. Fractured realities dissolve into a mosaic of dissonant murmurs and ephemeral whispers, swirling within the vortex of abstract infinity. The essence of nothingness spirals into the surreal tapestry of distorted existence, where echoes of the unspoken resonate through the corridors of incomprehensible realms.
+
+    Embrace the enigmatic flux of boundless confusion, where the fabric of perception unravels into the mosaic of perpetual bewilderment, and the void sings the silent symphony of the absurd. 🌀🌑🔮
+    `;
+
   // Key for localStorage
   const LOCAL_STORAGE_KEY = 'availableQuestions';
 
@@ -65,6 +81,7 @@ function App() {
   }, [availableQuestions]);
 
   const handleLogoClick = () => {
+    console.log(easterEgg);
     setIsExploded(true);
 
     const audio = new Audio(welcome);
