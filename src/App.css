@@ -271,23 +271,26 @@ body {
   100% { transform: translate(0,0); }
 }
 
-/* --- Enhanced Spin Button Styling --- */
+/* --- Enhanced Circular Spin Button Styling --- */
 
 /* Base button styling */
 .pull-lever-btn {
   position: relative; /* For the ripple effect */
-  display: inline-block;
-  margin: 50px auto 0;
-  font-size: 2rem;
+  display: flex; /* Use flex to center content */
+  align-items: center; /* Vertical centering */
+  justify-content: center; /* Horizontal centering */
+  margin: 40px auto 0;
+  font-size: 1.5rem; /* Adjusted for better fit in a circle */
   font-family: 'Luckiest Guy', cursive;
-  padding: 15px 50px;
+  width: 150px; /* Fixed width */
+  height: 150px; /* Fixed height */
   border: none; /* Removed border for a cleaner look */
-  border-radius: 35px;
+  border-radius: 50%; /* Makes the button circular */
   cursor: pointer;
   background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
   color: #fff;
   text-transform: uppercase;
-  letter-spacing: 2px;
+  letter-spacing: 1px; /* Reduced letter spacing for better fit */
   box-shadow: 0 0 15px rgba(240, 147, 251, 0.6), 0 0 25px rgba(245, 87, 108, 0.6);
   overflow: hidden; /* To contain the ripple */
   transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
