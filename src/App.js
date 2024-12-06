@@ -41,15 +41,21 @@ function App() {
   const [availableQuestions, setAvailableQuestions] = useState([...originalQuestions]);
   const [currentQuestion, setCurrentQuestion] = useState('');
 
+  const [confettiPieces, setConfettiPieces] = useState([]);
+  const [highlightFlash, setHighlightFlash] = useState(false);
+  const [confettiMegaPieces, setConfettiMegaPieces] = useState([]);
+  const [shimmerText, setShimmerText] = useState(false);
+  const [shakeContainer, setShakeContainer] = useState(false);
+
   useEffect(() => {
-    // Set initial question to a random one from the pool
-    setCurrentQuestion(availableQuestions[Math.floor(Math.random() * availableQuestions.length)]);
-  }, []);
+    if (availableQuestions.length > 0) {
+      setCurrentQuestion(availableQuestions[Math.floor(Math.random() * availableQuestions.length)]);
+    }
+  }, [availableQuestions]);
 
   const handleLogoClick = () => {
     setIsExploded(true);
 
-    // Play the welcome sound effect
     const audio = new Audio(welcome);
     audio.play().catch((error) => {
       console.error("Audio playback failed:", error);
@@ -66,19 +72,104 @@ function App() {
     }, 2000);
   };
 
-  const startSlotMachine = () => {
+  const generateConfetti = () => {
+    const confettiCount = 120;
+    const shapes = ['circle', 'square', 'triangle'];
+    const pieces = [];
+    for (let i = 0; i < confettiCount; i++) {
+      const shape = shapes[Math.floor(Math.random() * shapes.length)];
+      pieces.push({
+        id: 'c_' + i,
+        left: Math.random() * 100,
+        delay: Math.random() * 3,
+        size: Math.random() * (16 - 6) + 6,
+        color: `hsl(${Math.floor(Math.random() * 360)}, 100%, 70%)`,
+        shape: shape,
+        rotation: Math.random() * 360
+      });
+    }
+    setConfettiPieces(pieces);
+
+    // Highlight flash
+    setHighlightFlash(true);
+    setTimeout(() => {
+      setHighlightFlash(false);
+    }, 600);
+
+    generateMegaConfetti();
+
+    setTimeout(() => {
+      setShimmerText(true);
+      setTimeout(() => setShimmerText(false), 1500);
+    }, 800);
+
+    setShakeContainer(true);
+    setTimeout(() => setShakeContainer(false), 600);
+
+    // Clear confetti after some time
+    setTimeout(() => {
+      setConfettiPieces([]);
+      setConfettiMegaPieces([]);
+    }, 5000);
+  };
+
+  const generateMegaConfetti = () => {
+    const megaCount = 20;
+    const megaShapes = ['circle', 'triangle'];
+    const megaPiecesArray = [];
+    for (let i = 0; i < megaCount; i++) {
+      const shape = megaShapes[Math.floor(Math.random() * megaShapes.length)];
+      megaPiecesArray.push({
+        id: 'm_' + i,
+        left: Math.random() * 100,
+        delay: Math.random() * 1,
+        size: Math.random() * (30 - 15) + 15,
+        color: `hsl(${Math.floor(Math.random() * 360)}, 100%, 80%)`,
+        shape: shape,
+        rotation: Math.random() * 360
+      });
+    }
+    setConfettiMegaPieces(megaPiecesArray);
+  };
+
+  const startSlotMachine = (e) => {
     if (isSpinning) return;
 
-    // Play the spin sound effect
     const audio = new Audio(spin);
     audio.play().catch((error) => {
       console.error("Audio playback failed:", error);
     });
 
     setIsSpinning(true);
+
+    // Create ripple effect
+    const button = e.currentTarget;
+    const ripple = document.createElement('span');
+    ripple.classList.add('ripple');
+
+    // Calculate position
+    const rect = button.getBoundingClientRect();
+    const size = Math.max(rect.width, rect.height);
+    ripple.style.width = ripple.style.height = `${size}px`;
+    ripple.style.left = `${e.clientX - rect.left - size / 2}px`;
+    ripple.style.top = `${e.clientY - rect.top - size / 2}px`;
+
+    // Append ripple to button
+    button.appendChild(ripple);
+
+    // Remove ripple after animation
+    ripple.addEventListener('animationend', () => {
+      ripple.remove();
+    });
+
+    // Add 'pressed' class to trigger simple animation and remove it after 300ms
+    button.classList.add('pressed');
+    setTimeout(() => {
+      button.classList.remove('pressed');
+    }, 300);
+
     const questionElem = document.querySelector('.question-display');
 
-    // Number of spins (including final selection)
     const totalSpins = 6; 
     let count = 0;
 
@@ -86,7 +177,6 @@ function App() {
 
     const spinIteration = () => {
       if (count >= totalSpins) {
-        // Done spinning
         setIsSpinning(false);
         return;
       }
@@ -94,48 +184,36 @@ function App() {
       questionElem.classList.add('fade-out-down');
 
       setTimeout(() => {
-        // Choose a random question from the available pool
         const randomIndex = Math.floor(Math.random() * availableQuestions.length);
         const chosenQuestion = availableQuestions[randomIndex];
-
-        // On the final spin, we will select this question and remove it from the pool
         const isFinalSpin = (count === totalSpins - 1);
 
         if (isFinalSpin) {
-          // Remove the chosen question from availableQuestions
           const newPool = [...availableQuestions];
-          newPool.splice(randomIndex, 1); 
+          newPool.splice(randomIndex, 1);
           setAvailableQuestions(newPool);
-
-          // If we've used all questions, reset the pool
           if (newPool.length === 0) {
             setAvailableQuestions([...originalQuestions]);
           }
+          generateConfetti();
         }
 
-        // Update current question (whether final spin or intermediate)
         setCurrentQuestion(chosenQuestion);
 
-        // Animate fade in
         questionElem.classList.remove('fade-out-down');
         questionElem.classList.add('fade-in-up');
 
         setTimeout(() => {
           questionElem.classList.remove('fade-in-up');
-
-          // Schedule next iteration if not done
           if (count < totalSpins - 1) {
-            // Use delays for intermediate spins only, not the final one
             const delay = count < delays.length ? delays[count] : delays[delays.length - 1];
             setTimeout(spinIteration, delay);
           } else {
-            // Final spin completed
             setIsSpinning(false);
           }
-
           count++;
-        }, 200); // Fade-in duration
-      }, 200); // Fade-out duration
+        }, 200);
+      }, 200);
     };
 
     spinIteration();
@@ -153,8 +231,9 @@ function App() {
       </header>
       <main className="Main-page">
         <h1>Georgia's Question of the Day!</h1>
-        <div className="question-container">
-          <p className="question-display">{currentQuestion}</p>
+        <div className={`question-container ${shakeContainer ? 'shake' : ''}`}>
+          {highlightFlash && <div className="highlight-flash"></div>}
+          <p className={`question-display ${shimmerText ? 'shimmer-text' : ''}`}>{currentQuestion}</p>
         </div>
         <button className="pull-lever-btn" onClick={startSlotMachine} disabled={isSpinning}>
           SPIN!
@@ -166,6 +245,38 @@ function App() {
           may be subject to legal enforcement measures.***
         </p>
       </footer>
+
+      {confettiPieces.map(piece => (
+        <div
+          key={piece.id}
+          className={`confetti-piece ${piece.shape}`}
+          style={{
+            left: `${piece.left}%`,
+            animationDelay: `${piece.delay}s`,
+            width: `${piece.size}px`,
+            height: `${piece.size}px`,
+            backgroundColor: piece.shape === 'triangle' ? 'transparent' : piece.color,
+            transform: `rotate(${piece.rotation}deg)`,
+            borderColor: piece.shape === 'triangle' ? piece.color : 'transparent'
+          }}
+        />
+      ))}
+
+      {confettiMegaPieces.map(piece => (
+        <div
+          key={piece.id}
+          className={`confetti-piece mega ${piece.shape}`}
+          style={{
+            left: `${piece.left}%`,
+            animationDelay: `${piece.delay}s`,
+            width: `${piece.size}px`,
+            height: `${piece.size}px`,
+            backgroundColor: piece.shape === 'triangle' ? 'transparent' : piece.color,
+            transform: `rotate(${piece.rotation}deg)`,
+            borderColor: piece.shape === 'triangle' ? piece.color : 'transparent'
+          }}
+        />
+      ))}
     </div>
   );
 }

@@ -1,20 +1,25 @@
 @import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap');
 
-/* Remove default body scroll and spacing */
 html, body {
   margin: 0;
   padding: 0;
   height: 100%;
-  overflow: hidden; /* Prevent scrolling */
+  overflow: hidden; 
+}
+
+/* Static background gradient (no animation) */
+body {
+  background: radial-gradient(circle, #ff4d4d, #b22222, #4b0000);
 }
 
 .App {
   text-align: center;
-  height: 100vh; /* Occupies full viewport height */
+  height: 100vh; 
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  position: relative;
 }
 
 .App-logo {
@@ -29,7 +34,6 @@ html, body {
   animation: explode 2s forwards;
 }
 
-/* Both the header and main page should fully occupy the viewport */
 .App-header {
   background: radial-gradient(circle, #ff4d4d, #b22222, #4b0000);
   height: 100vh;
@@ -47,20 +51,18 @@ html, body {
   background: radial-gradient(circle, #ff4d4d, #b22222, #4b0000);
   height: 100vh;
   width: 100vw;
-  padding: 20px;
+  padding: 10px;
   opacity: 0;
   transform: scale(0.8);
   overflow: hidden;
 }
 
-/* Adjust font sizes to ensure everything fits without scrolling */
 .Main-page h1 {
   font-family: 'Luckiest Guy', cursive;
-  font-size: 6rem; /* Reduced size if needed */
+  font-size: 6rem;
   color: #fff;
 }
 
-/* Bounce-in animation for the main page */
 .bounce-in {
   animation: bounceIn 1s forwards;
 }
@@ -80,12 +82,11 @@ html, body {
   }
 }
 
-/* Question Container */
 .question-container {
   position: relative;
   width: 80vw;
   max-width: 800px;
-  height: 30vh; /* Adjust so it fits */
+  height: 30vh; 
   margin: 0 auto;
   background: rgba(0, 0, 0, 0.3);
   border: 2px solid #fff;
@@ -98,34 +99,12 @@ html, body {
 
 .question-display {
   font-size: 2rem;
+  padding: 10px;
   color: #fff;
   text-align: center;
   text-shadow: 0 0 10px #fff;
 }
 
-.pull-lever-btn {
-  display: block;
-  margin: 20px auto 0; /* Adjust spacing */
-  font-size: 2rem;
-  font-family: 'Luckiest Guy', cursive;
-  padding: 20px 40px;
-  border: 6px solid #000;
-  border-radius: 100px;
-  cursor: pointer;
-  background: linear-gradient(180deg, #ff66cc 0%, #ff00aa 100%);
-  color: #000;
-  text-transform: uppercase;
-  letter-spacing: 2px;
-  box-shadow: 0 0 20px #ff66cc, 0 0 40px #ff66cc, inset 0 0 10px #fff;
-  transition: transform 0.2s ease-in-out, box-shadow 0.2s ease-in-out;
-}
-
-.pull-lever-btn:hover:enabled {
-  transform: scale(1.1);
-  box-shadow: 0 0 30px #ff66cc, 0 0 60px #ff66cc, inset 0 0 15px #fff;
-}
-
-/* Continuous spin for the logo */
 @keyframes spinForever {
   from {
     transform: rotate(0deg);
@@ -135,7 +114,6 @@ html, body {
   }
 }
 
-/* Explosion animation for the logo */
 @keyframes explode {
   0% {
     transform: scale(1) rotate(0deg);
@@ -149,7 +127,7 @@ html, body {
   }
 }
 
-/* Fade animations for questions */
+/* Fade animations */
 .fade-in-up {
   animation: fadeInUp 0.2s ease-in-out forwards;
 }
@@ -159,23 +137,222 @@ html, body {
 }
 
 @keyframes fadeInUp {
-  from {
-    opacity: 0;
-    transform: translateY(-20px);
-  }
-  to {
-    opacity: 1;
-    transform: translateY(0);
-  }
+  from { opacity: 0; transform: translateY(-20px); }
+  to { opacity: 1; transform: translateY(0); }
 }
 
 @keyframes fadeOutDown {
-  from {
+  from { opacity: 1; transform: translateY(0); }
+  to { opacity: 0; transform: translateY(20px); }
+}
+
+/* Highlight flash overlay */
+.highlight-flash {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: radial-gradient(circle, rgba(255,255,255,0.8), transparent);
+  animation: flashFade 0.6s forwards;
+  pointer-events: none;
+  z-index: 999;
+}
+
+@keyframes flashFade {
+  0% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* Confetti pieces remain unchanged */
+.confetti-piece {
+  position: absolute;
+  top: -20px;
+  border-radius: 50%;
+  animation: fall 3s linear forwards;
+  opacity: 0.9;
+  box-shadow: 0 0 8px rgba(255,255,255,0.5);
+}
+
+/* Triangle shape */
+.confetti-piece.triangle {
+  width: 0;
+  height: 0;
+  background: none;
+  border-left: 7px solid transparent;
+  border-right: 7px solid transparent;
+  border-bottom: 14px solid currentColor;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+/* Square shape */
+.confetti-piece.square {
+  border-radius: 5%;
+}
+
+/* Confetti trail */
+.confetti-piece::after {
+  content: '';
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 2px;
+  left: 2px;
+  border-radius: inherit;
+  background: inherit;
+  filter: blur(3px);
+  opacity: 0.7;
+  z-index: -1;
+}
+
+@keyframes fall {
+  0% {
+    transform: translateY(-50px) rotate(0deg) scale(1);
     opacity: 1;
-    transform: translateY(0);
+  }
+  30% {
+    transform: translateY(30vh) rotate(180deg) scale(1.2);
+  }
+  70% {
+    transform: translateY(70vh) rotate(360deg) scale(0.8);
+  }
+  100% {
+    transform: translateY(100vh) rotate(720deg) scale(1);
+    opacity: 0;
+  }
+}
+
+.confetti-piece.mega {
+  animation: fallMega 4s linear forwards;
+  opacity: 1;
+  box-shadow: 0 0 10px rgba(255,255,255,0.7);
+}
+
+@keyframes fallMega {
+  0% {
+    transform: translateY(-60px) rotate(0deg) scale(1);
+    opacity: 1;
+  }
+  50% {
+    transform: translateY(50vh) rotate(360deg) scale(1.3);
+  }
+  100% {
+    transform: translateY(100vh) rotate(720deg) scale(1);
+    opacity: 0;
+  }
+}
+
+/* Shimmer text */
+.shimmer-text {
+  animation: shimmer 1s linear infinite alternate;
+}
+
+@keyframes shimmer {
+  0% {
+    text-shadow: 0 0 10px #fff, 0 0 20px #fff, 0 0 30px #ff66cc, 0 0 40px #ff66cc;
+  }
+  100% {
+    text-shadow: 0 0 5px #fff, 0 0 15px #ff66cc, 0 0 30px #ff00aa;
+  }
+}
+
+/* Shake animation for the container */
+.shake {
+  animation: shakeIt 0.6s ease;
+}
+
+@keyframes shakeIt {
+  0% { transform: translate(0,0); }
+  20% { transform: translate(-10px, 0); }
+  40% { transform: translate(10px, -2px); }
+  60% { transform: translate(-10px, 2px); }
+  80% { transform: translate(10px, 0); }
+  100% { transform: translate(0,0); }
+}
+
+/* --- Enhanced Spin Button Styling --- */
+
+/* Base button styling */
+.pull-lever-btn {
+  position: relative; /* For the ripple effect */
+  display: inline-block;
+  margin: 50px auto 0;
+  font-size: 2rem;
+  font-family: 'Luckiest Guy', cursive;
+  padding: 15px 50px;
+  border: none; /* Removed border for a cleaner look */
+  border-radius: 35px;
+  cursor: pointer;
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  color: #fff;
+  text-transform: uppercase;
+  letter-spacing: 2px;
+  box-shadow: 0 0 15px rgba(240, 147, 251, 0.6), 0 0 25px rgba(245, 87, 108, 0.6);
+  overflow: hidden; /* To contain the ripple */
+  transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
+  outline: none;
+  animation: glow 2s infinite alternate;
+}
+
+/* Glowing animation */
+@keyframes glow {
+  from {
+    box-shadow: 0 0 15px rgba(240, 147, 251, 0.6), 0 0 25px rgba(245, 87, 108, 0.6);
   }
   to {
+    box-shadow: 0 0 20px rgba(240, 147, 251, 0.8), 0 0 35px rgba(245, 87, 108, 0.8);
+  }
+}
+
+/* Hover effect */
+.pull-lever-btn:hover:enabled {
+  transform: scale(1.1);
+  background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);
+  box-shadow: 0 0 25px rgba(245, 87, 108, 0.8), 0 0 35px rgba(240, 147, 251, 0.8);
+}
+
+/* Active (pressed) effect */
+.pull-lever-btn:active {
+  transform: scale(0.95);
+  background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+  box-shadow: 0 0 10px rgba(240, 147, 251, 0.6), 0 0 20px rgba(245, 87, 108, 0.6);
+}
+
+/* Ripple effect */
+.pull-lever-btn .ripple {
+  position: absolute;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, 0.6);
+  transform: scale(0);
+  animation: rippleEffect 0.6s linear;
+  pointer-events: none;
+}
+
+/* Ripple animation */
+@keyframes rippleEffect {
+  to {
+    transform: scale(4);
     opacity: 0;
-    transform: translateY(20px);
+  }
+}
+
+/* --- Optional: Pressed Class for Additional Effects --- */
+.pull-lever-btn.pressed {
+  animation: pressEffect 0.2s forwards;
+}
+
+@keyframes pressEffect {
+  0% {
+    transform: scale(1);
+    box-shadow: 0 0 15px rgba(240, 147, 251, 0.6), 0 0 25px rgba(245, 87, 108, 0.6);
+  }
+  50% {
+    transform: scale(0.95);
+    box-shadow: 0 0 10px rgba(240, 147, 251, 0.4), 0 0 15px rgba(245, 87, 108, 0.4);
+  }
+  100% {
+    transform: scale(1);
+    box-shadow: 0 0 15px rgba(240, 147, 251, 0.6), 0 0 25px rgba(245, 87, 108, 0.6);
   }
 }
