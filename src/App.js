@@ -2,43 +2,13 @@ import { useState, useEffect } from 'react';
 import logo from './assets/logo.png';
 import welcome from './assets/welcome.m4a';
 import spin from './assets/spin.m4a';
+import questionsData from './questions.json';
 import './App.css';
 
 function App() {
-  const originalQuestions = [
-    // Genuine questions
-    "What's your biggest aspiration in life?",
-    "If you could have dinner with any historical figure, who would it be and why?",
-    "What memory instantly makes you smile?",
-    "What's one skill you wish you could master instantly?",
-    "If you could live anywhere in the world, where would it be?",
-    "Who has been the most influential person in your life and why?",
-    "What's the best piece of advice you've ever received?",
-    "If you had to sum up your personality in three words, what would they be?",
-    "What's a personal goal you hope to achieve in the next year?",
-    "What does happiness mean to you?",
-    "If you could time travel, would you visit the past or the future?",
-    "What's your favorite way to unwind after a stressful day?",
-    "What hobby or interest have you always wanted to try but never did?",
-    "If you could start your own business, what would it be?",
-    "What’s something that always brings you joy, no matter what?",
-
-    // Weird questions
-    "What is the worst thing you've ever done?",
-    "Would you rather be deep fried or boiled in Dr. Pepper?",
-    "If you had to replace one of your hands with a kitchen utensil, which would you choose and why?",
-    "You wake up one morning with a unicycle permanently attached to your feet—how do you go about your day?",
-    "If you could communicate only in movie quotes for the rest of your life, would you do it?",
-    "If your shadow started giving you unsolicited life advice, would you listen?",
-    "If you had to pick a personal theme song every time you walked into a room, what would it be?",
-    "If the alphabet decided to rearrange itself, which letter would you petition to be first?",
-    "If you were forced to live in a giant bucket of Jello for a month, how would you pass the time?",
-    "If you had to teach a class on a completely made-up subject, what would it be called?"
-  ];
-
   const [isExploded, setIsExploded] = useState(false);
   const [isSpinning, setIsSpinning] = useState(false);
-  const [availableQuestions, setAvailableQuestions] = useState([...originalQuestions]);
+  const [availableQuestions, setAvailableQuestions] = useState([]);
   const [currentQuestion, setCurrentQuestion] = useState('');
 
   const [confettiPieces, setConfettiPieces] = useState([]);
@@ -47,9 +17,22 @@ function App() {
   const [shimmerText, setShimmerText] = useState(false);
   const [shakeContainer, setShakeContainer] = useState(false);
 
+  // Initialize available questions from JSON
+  useEffect(() => {
+    // Combine all questions into a single array
+    const combinedQuestions = [
+      ...questionsData.genuine,
+      ...questionsData.weird
+    ];
+    setAvailableQuestions(combinedQuestions);
+  }, []);
+
+  // Select a random question whenever availableQuestions changes
   useEffect(() => {
     if (availableQuestions.length > 0) {
-      setCurrentQuestion(availableQuestions[Math.floor(Math.random() * availableQuestions.length)]);
+      setCurrentQuestion(
+        availableQuestions[Math.floor(Math.random() * availableQuestions.length)]
+      );
     }
   }, [availableQuestions]);
 
@@ -193,7 +176,12 @@ function App() {
           newPool.splice(randomIndex, 1);
           setAvailableQuestions(newPool);
           if (newPool.length === 0) {
-            setAvailableQuestions([...originalQuestions]);
+            // Reset to all questions if pool is empty
+            const combinedQuestions = [
+              ...questionsData.genuine,
+              ...questionsData.weird
+            ];
+            setAvailableQuestions(combinedQuestions);
           }
           generateConfetti();
         }
@@ -235,7 +223,12 @@ function App() {
           {highlightFlash && <div className="highlight-flash"></div>}
           <p className={`question-display ${shimmerText ? 'shimmer-text' : ''}`}>{currentQuestion}</p>
         </div>
-        <button className="pull-lever-btn" onClick={startSlotMachine} disabled={isSpinning}>
+        <button
+          className="pull-lever-btn"
+          onClick={startSlotMachine}
+          disabled={isSpinning}
+          aria-label="Spin the question of the day"
+        >
           SPIN!
         </button>
       </main>

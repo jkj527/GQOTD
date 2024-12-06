@@ -280,7 +280,7 @@ body {
   align-items: center; /* Vertical centering */
   justify-content: center; /* Horizontal centering */
   margin: 40px auto 0;
-  font-size: 1.5rem; /* Adjusted for better fit in a circle */
+  font-size: 3rem; /* Adjusted for better fit in a circle */
   font-family: 'Luckiest Guy', cursive;
   width: 150px; /* Fixed width */
   height: 150px; /* Fixed height */
