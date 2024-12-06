@@ -1,3 +1,5 @@
+/* App.css */
+
 @import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap');
 
 html, body {
@@ -162,85 +164,6 @@ body {
 @keyframes flashFade {
   0% { opacity: 1; }
   100% { opacity: 0; }
-}
-
-/* Confetti pieces remain unchanged */
-.confetti-piece {
-  position: absolute;
-  top: -20px;
-  border-radius: 50%;
-  animation: fall 3s linear forwards;
-  opacity: 0.9;
-  box-shadow: 0 0 8px rgba(255,255,255,0.5);
-}
-
-/* Triangle shape */
-.confetti-piece.triangle {
-  width: 0;
-  height: 0;
-  background: none;
-  border-left: 7px solid transparent;
-  border-right: 7px solid transparent;
-  border-bottom: 14px solid currentColor;
-  border-radius: 0;
-  box-shadow: none;
-}
-
-/* Square shape */
-.confetti-piece.square {
-  border-radius: 5%;
-}
-
-/* Confetti trail */
-.confetti-piece::after {
-  content: '';
-  position: absolute;
-  width: 100%;
-  height: 100%;
-  top: 2px;
-  left: 2px;
-  border-radius: inherit;
-  background: inherit;
-  filter: blur(3px);
-  opacity: 0.7;
-  z-index: -1;
-}
-
-@keyframes fall {
-  0% {
-    transform: translateY(-50px) rotate(0deg) scale(1);
-    opacity: 1;
-  }
-  30% {
-    transform: translateY(30vh) rotate(180deg) scale(1.2);
-  }
-  70% {
-    transform: translateY(70vh) rotate(360deg) scale(0.8);
-  }
-  100% {
-    transform: translateY(100vh) rotate(720deg) scale(1);
-    opacity: 0;
-  }
-}
-
-.confetti-piece.mega {
-  animation: fallMega 4s linear forwards;
-  opacity: 1;
-  box-shadow: 0 0 10px rgba(255,255,255,0.7);
-}
-
-@keyframes fallMega {
-  0% {
-    transform: translateY(-60px) rotate(0deg) scale(1);
-    opacity: 1;
-  }
-  50% {
-    transform: translateY(50vh) rotate(360deg) scale(1.3);
-  }
-  100% {
-    transform: translateY(100vh) rotate(720deg) scale(1);
-    opacity: 0;
-  }
 }
 
 /* Shimmer text */

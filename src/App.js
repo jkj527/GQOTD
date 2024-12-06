@@ -1,4 +1,7 @@
+// App.js
+
 import { useState, useEffect } from 'react';
+import confetti from 'canvas-confetti'; // Import canvas-confetti
 import logo from './assets/logo.png';
 import welcome from './assets/welcome.m4a';
 import spin from './assets/spin.m4a';
@@ -11,29 +14,54 @@ function App() {
   const [availableQuestions, setAvailableQuestions] = useState([]);
   const [currentQuestion, setCurrentQuestion] = useState('');
 
-  const [confettiPieces, setConfettiPieces] = useState([]);
   const [highlightFlash, setHighlightFlash] = useState(false);
-  const [confettiMegaPieces, setConfettiMegaPieces] = useState([]);
   const [shimmerText, setShimmerText] = useState(false);
   const [shakeContainer, setShakeContainer] = useState(false);
 
-  // Initialize available questions from JSON
+  // Key for localStorage
+  const LOCAL_STORAGE_KEY = 'availableQuestions';
+
+  // Helper Functions
+  const loadQuestions = () => {
+    const storedQuestions = localStorage.getItem(LOCAL_STORAGE_KEY);
+    if (storedQuestions) {
+      try {
+        return JSON.parse(storedQuestions);
+      } catch (error) {
+        console.error("Failed to parse stored questions:", error);
+        return null;
+      }
+    }
+    return null;
+  };
+
+  const saveQuestions = (questions) => {
+    localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(questions));
+  };
+
+  // Initialize available questions from localStorage or JSON
   useEffect(() => {
-    // Combine all questions into a single array
-    const combinedQuestions = [
-      ...questionsData.genuine,
-      ...questionsData.weird
-    ];
-    setAvailableQuestions(combinedQuestions);
+    const stored = loadQuestions();
+    if (stored && Array.isArray(stored)) {
+      setAvailableQuestions(stored);
+    } else {
+      const combined = [...questionsData.genuine, ...questionsData.weird];
+      setAvailableQuestions(combined);
+    }
   }, []);
 
-  // Select a random question whenever availableQuestions changes
+  // Save to localStorage and set current question whenever availableQuestions changes
   useEffect(() => {
     if (availableQuestions.length > 0) {
       setCurrentQuestion(
         availableQuestions[Math.floor(Math.random() * availableQuestions.length)]
       );
+    } else {
+      const combined = [...questionsData.genuine, ...questionsData.weird];
+      setAvailableQuestions(combined);
     }
+
+    saveQuestions(availableQuestions);
   }, [availableQuestions]);
 
   const handleLogoClick = () => {
@@ -55,23 +83,34 @@ function App() {
     }, 2000);
   };
 
+  // Replace manual confetti with canvas-confetti
   const generateConfetti = () => {
-    const confettiCount = 120;
-    const shapes = ['circle', 'square', 'triangle'];
-    const pieces = [];
-    for (let i = 0; i < confettiCount; i++) {
-      const shape = shapes[Math.floor(Math.random() * shapes.length)];
-      pieces.push({
-        id: 'c_' + i,
-        left: Math.random() * 100,
-        delay: Math.random() * 3,
-        size: Math.random() * (16 - 6) + 6,
-        color: `hsl(${Math.floor(Math.random() * 360)}, 100%, 70%)`,
-        shape: shape,
-        rotation: Math.random() * 360
-      });
-    }
-    setConfettiPieces(pieces);
+    // First burst
+    confetti({
+      particleCount: 150,
+      spread: 70,
+      origin: { y: 0.6 },
+      colors: ['#ff4d4d', '#b22222', '#4b0000', '#f093fb', '#f5576c'],
+      shapes: ['circle', 'square', 'triangle'],
+    });
+
+    // Second burst from left
+    confetti({
+      particleCount: 100,
+      spread: 60,
+      origin: { x: 0.25, y: 0.5 },
+      colors: ['#ff4d4d', '#b22222', '#4b0000'],
+      shapes: ['circle'],
+    });
+
+    // Third burst from right
+    confetti({
+      particleCount: 100,
+      spread: 60,
+      origin: { x: 0.75, y: 0.5 },
+      colors: ['#f093fb', '#f5576c'],
+      shapes: ['square'],
+    });
 
     // Highlight flash
     setHighlightFlash(true);
@@ -79,40 +118,15 @@ function App() {
       setHighlightFlash(false);
     }, 600);
 
-    generateMegaConfetti();
-
+    // Shimmer text
     setTimeout(() => {
       setShimmerText(true);
       setTimeout(() => setShimmerText(false), 1500);
     }, 800);
 
+    // Shake container
     setShakeContainer(true);
     setTimeout(() => setShakeContainer(false), 600);
-
-    // Clear confetti after some time
-    setTimeout(() => {
-      setConfettiPieces([]);
-      setConfettiMegaPieces([]);
-    }, 5000);
-  };
-
-  const generateMegaConfetti = () => {
-    const megaCount = 20;
-    const megaShapes = ['circle', 'triangle'];
-    const megaPiecesArray = [];
-    for (let i = 0; i < megaCount; i++) {
-      const shape = megaShapes[Math.floor(Math.random() * megaShapes.length)];
-      megaPiecesArray.push({
-        id: 'm_' + i,
-        left: Math.random() * 100,
-        delay: Math.random() * 1,
-        size: Math.random() * (30 - 15) + 15,
-        color: `hsl(${Math.floor(Math.random() * 360)}, 100%, 80%)`,
-        shape: shape,
-        rotation: Math.random() * 360
-      });
-    }
-    setConfettiMegaPieces(megaPiecesArray);
   };
 
   const startSlotMachine = (e) => {
@@ -153,7 +167,7 @@ function App() {
 
     const questionElem = document.querySelector('.question-display');
 
-    const totalSpins = 6; 
+    const totalSpins = 6;
     let count = 0;
 
     const delays = [0, 50, 100, 200, 400];
@@ -238,38 +252,6 @@ function App() {
           may be subject to legal enforcement measures.***
         </p>
       </footer>
-
-      {confettiPieces.map(piece => (
-        <div
-          key={piece.id}
-          className={`confetti-piece ${piece.shape}`}
-          style={{
-            left: `${piece.left}%`,
-            animationDelay: `${piece.delay}s`,
-            width: `${piece.size}px`,
-            height: `${piece.size}px`,
-            backgroundColor: piece.shape === 'triangle' ? 'transparent' : piece.color,
-            transform: `rotate(${piece.rotation}deg)`,
-            borderColor: piece.shape === 'triangle' ? piece.color : 'transparent'
-          }}
-        />
-      ))}
-
-      {confettiMegaPieces.map(piece => (
-        <div
-          key={piece.id}
-          className={`confetti-piece mega ${piece.shape}`}
-          style={{
-            left: `${piece.left}%`,
-            animationDelay: `${piece.delay}s`,
-            width: `${piece.size}px`,
-            height: `${piece.size}px`,
-            backgroundColor: piece.shape === 'triangle' ? 'transparent' : piece.color,
-            transform: `rotate(${piece.rotation}deg)`,
-            borderColor: piece.shape === 'triangle' ? piece.color : 'transparent'
-          }}
-        />
-      ))}
     </div>
   );
 }
