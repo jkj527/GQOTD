@@ -88,7 +88,7 @@ function App() {
     // First burst
     confetti({
       particleCount: 150,
-      spread: 70,
+      spread: 80,
       origin: { y: 0.6 },
       colors: ['#ff4d4d', '#b22222', '#4b0000', '#f093fb', '#f5576c'],
       shapes: ['circle', 'square', 'triangle'],
@@ -97,7 +97,7 @@ function App() {
     // Second burst from left
     confetti({
       particleCount: 100,
-      spread: 60,
+      spread: 70,
       origin: { x: 0.25, y: 0.5 },
       colors: ['#ff4d4d', '#b22222', '#4b0000'],
       shapes: ['circle'],
@@ -106,7 +106,7 @@ function App() {
     // Third burst from right
     confetti({
       particleCount: 100,
-      spread: 60,
+      spread: 70,
       origin: { x: 0.75, y: 0.5 },
       colors: ['#f093fb', '#f5576c'],
       shapes: ['square'],
