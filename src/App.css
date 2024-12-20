@@ -1,16 +1,44 @@
-/* App.css */
-
 @import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap');
 
 html, body {
   margin: 0;
   padding: 0;
   height: 100%;
-  overflow: hidden; 
+  overflow: hidden;
 }
 
 body {
-  background: radial-gradient(circle, #ff4d4d, #b22222, #4b0000);
+  /* Vibrant radial gradient with smooth outward movement */
+  background: radial-gradient(circle, 
+    #ff69b4, #ff4d4d, #6c00fa, #4dfcff, #42f59e, #f093fb, #f5576c);
+  background-size: 200% 200%;
+  animation: radialExpand 3s infinite alternate ease-in-out; /* Dynamic outward movement */
+}
+
+@keyframes radialExpand {
+  0% {
+    background-size: 150% 150%;
+    background-position: 50% 50%;
+  }
+  50% {
+    background-size: 200% 200%;
+    background-position: 50% 50%;
+  }
+  100% {
+    background-size: 150% 150%;
+    background-position: 50% 50%;
+  }
+}
+
+/* Add a subtle decorative overlay using pseudo-element if you like */
+body::before {
+  content: "";
+  position: absolute;
+  z-index: -1;
+  top: 0; right: 0; bottom: 0; left: 0;
+  pointer-events: none;
+  background-image: url('https://www.transparenttextures.com/patterns/diamond-upholstery.png');
+  opacity: 0.05;
 }
 
 .App {
@@ -35,8 +63,9 @@ body {
   animation: explode 2s forwards;
 }
 
+/* Adjusted background of .App-header and .Main-page to transparent so the animated body background shows through */
 .App-header {
-  background: radial-gradient(circle, #ff4d4d, #b22222, #4b0000);
+  background: transparent;
   height: 100vh;
   width: 100vw;
   display: flex;
@@ -49,7 +78,7 @@ body {
 
 .Main-page {
   display: none;
-  background: radial-gradient(circle, #ff4d4d, #b22222, #4b0000);
+  background: transparent;
   height: 100vh;
   width: 100vw;
   padding: 10px;
@@ -286,3 +315,5 @@ body {
     box-shadow: 0 0 15px rgba(240,147,251,0.6), 0 0 25px rgba(245,87,108,0.6);
   }
 }
+
+/* The rest of your styles remain unchanged */
