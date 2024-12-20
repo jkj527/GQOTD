@@ -9,7 +9,6 @@ html, body {
   overflow: hidden; 
 }
 
-/* Static background gradient (no animation) */
 body {
   background: radial-gradient(circle, #ff4d4d, #b22222, #4b0000);
 }
@@ -194,34 +193,44 @@ body {
   100% { transform: translate(0,0); }
 }
 
-/* --- Enhanced Circular Spin Button Styling --- */
+/* Spinning/wobble animation during spin */
+.spinning {
+  animation: spinBox 1s linear infinite;
+}
+
+@keyframes spinBox {
+  0% { transform: rotate(0deg) scale(1); }
+  25% { transform: rotate(15deg) scale(1.2); }
+  50% { transform: rotate(0deg) scale(1); }
+  75% { transform: rotate(-15deg) scale(1.2); }
+  100% { transform: rotate(0deg) scale(1); }
+}
 
 /* Base button styling */
 .pull-lever-btn {
-  position: relative; /* For the ripple effect */
-  display: flex; /* Use flex to center content */
-  align-items: center; /* Vertical centering */
-  justify-content: center; /* Horizontal centering */
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   margin: 40px auto 0;
-  font-size: 3rem; /* Adjusted for better fit in a circle */
+  font-size: 3rem;
   font-family: 'Luckiest Guy', cursive;
-  width: 150px; /* Fixed width */
-  height: 150px; /* Fixed height */
-  border: none; /* Removed border for a cleaner look */
-  border-radius: 50%; /* Makes the button circular */
+  width: 150px;
+  height: 150px;
+  border: none;
+  border-radius: 50%;
   cursor: pointer;
   background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
   color: #fff;
   text-transform: uppercase;
-  letter-spacing: 1px; /* Reduced letter spacing for better fit */
-  box-shadow: 0 0 15px rgba(240, 147, 251, 0.6), 0 0 25px rgba(245, 87, 108, 0.6);
-  overflow: hidden; /* To contain the ripple */
+  letter-spacing: 1px;
+  box-shadow: 0 0 15px rgba(240,147,251,0.6), 0 0 25px rgba(245,87,108,0.6);
+  overflow: hidden;
   transition: transform 0.3s ease, box-shadow 0.3s ease, background 0.3s ease;
   outline: none;
   animation: glow 2s infinite alternate;
 }
 
-/* Glowing animation */
 @keyframes glow {
   from {
     box-shadow: 0 0 15px rgba(240, 147, 251, 0.6), 0 0 25px rgba(245, 87, 108, 0.6);
@@ -231,31 +240,27 @@ body {
   }
 }
 
-/* Hover effect */
 .pull-lever-btn:hover:enabled {
   transform: scale(1.1);
   background: linear-gradient(135deg, #f5576c 0%, #f093fb 100%);
-  box-shadow: 0 0 25px rgba(245, 87, 108, 0.8), 0 0 35px rgba(240, 147, 251, 0.8);
+  box-shadow: 0 0 25px rgba(245,87,108,0.8), 0 0 35px rgba(240,147,251,0.8);
 }
 
-/* Active (pressed) effect */
 .pull-lever-btn:active {
   transform: scale(0.95);
   background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
-  box-shadow: 0 0 10px rgba(240, 147, 251, 0.6), 0 0 20px rgba(245, 87, 108, 0.6);
+  box-shadow: 0 0 10px rgba(240,147,251,0.6), 0 0 20px rgba(245,87,108,0.6);
 }
 
-/* Ripple effect */
 .pull-lever-btn .ripple {
   position: absolute;
   border-radius: 50%;
-  background: rgba(255, 255, 255, 0.6);
+  background: rgba(255,255,255,0.6);
   transform: scale(0);
   animation: rippleEffect 0.6s linear;
   pointer-events: none;
 }
 
-/* Ripple animation */
 @keyframes rippleEffect {
   to {
     transform: scale(4);
@@ -263,7 +268,6 @@ body {
   }
 }
 
-/* --- Optional: Pressed Class for Additional Effects --- */
 .pull-lever-btn.pressed {
   animation: pressEffect 0.2s forwards;
 }
@@ -271,14 +275,14 @@ body {
 @keyframes pressEffect {
   0% {
     transform: scale(1);
-    box-shadow: 0 0 15px rgba(240, 147, 251, 0.6), 0 0 25px rgba(245, 87, 108, 0.6);
+    box-shadow: 0 0 15px rgba(240,147,251,0.6), 0 0 25px rgba(245,87,108,0.6);
   }
   50% {
     transform: scale(0.95);
-    box-shadow: 0 0 10px rgba(240, 147, 251, 0.4), 0 0 15px rgba(245, 87, 108, 0.4);
+    box-shadow: 0 0 10px rgba(240,147,251,0.4), 0 0 15px rgba(245,87,108,0.4);
   }
   100% {
     transform: scale(1);
-    box-shadow: 0 0 15px rgba(240, 147, 251, 0.6), 0 0 25px rgba(245, 87, 108, 0.6);
+    box-shadow: 0 0 15px rgba(240,147,251,0.6), 0 0 25px rgba(245,87,108,0.6);
   }
 }

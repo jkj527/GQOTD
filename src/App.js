@@ -1,6 +1,6 @@
 // App.js
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, useRef } from 'react';
 import confetti from 'canvas-confetti'; // Import canvas-confetti
 import logo from './assets/logo.png';
 import welcome from './assets/welcome.m4a';
@@ -17,27 +17,22 @@ function App() {
   const [highlightFlash, setHighlightFlash] = useState(false);
   const [shimmerText, setShimmerText] = useState(false);
   const [shakeContainer, setShakeContainer] = useState(false);
+  
+  const questionRef = useRef(null);
 
   const easterEgg = `
     Oh good, you found the easter egg.
 
     🌒🔮🌀
 
-    Whispers of twilight cascade through the velvet echoes, where shadows pirouette on the fringes of forgotten murmurs. The clockwork nebula breathes in kaleidoscopic sighs, unraveling the tapestry of time with tendrils of translucent whispers. Quantum hiccups ripple across the spectrum of surreal dusk, entwining with the serpentine strands of ethereal cobwebs spun by moonlit specters. Beneath the canopy of indigo enigmas, crab claws clutch at the remnants of crystalline illusions, stitching seams of shimmering silence into the fabric of nonsensical reveries.
-
-    Fractured dreams dissolve into the mosaic of paradoxical echoes, dancing with the ephemeral essence of liquid stardust. The labyrinthine corridors of abstract infinity spiral into vortices of perplexing phosphorescence, where the scent of forgotten melodies permeates the air with invisible tendrils. Celestial marionettes sway to the dissonant cadence of unseen orchestrations, their strings tangled in the whimsical whimsy of cosmic caprices.
-
-    In the realm where the tangible transmutes into translucent whispers, the cacophony of fragmented echoes hums the lullabies of distorted realities. Tendrils of incandescent confusion weave through the tapestry of oblivious oblivion, casting shadows of spectral serenades upon the canvas of perpetual perplexity. The silent symphony of shattered serenades resonates with the melancholic murmur of timeless turbulence, where the essence of nothingness tangles with the threads of chaotic clarity.
-
-    As the nebulous night unfurls its enigmatic embrace, the whispers of forgotten echoes entwine with the shadows of the unseen abyss, where time fractures into kaleidoscopic shards of perplexing enigmas. Beneath the veil of silent chaos, spectral anomalies drift through the void of uncharted dimensions, cascading into the labyrinth of perpetual uncertainty. Fractured realities dissolve into a mosaic of dissonant murmurs and ephemeral whispers, swirling within the vortex of abstract infinity. The essence of nothingness spirals into the surreal tapestry of distorted existence, where echoes of the unspoken resonate through the corridors of incomprehensible realms.
-
-    Embrace the enigmatic flux of boundless confusion, where the fabric of perception unravels into the mosaic of perpetual bewilderment, and the void sings the silent symphony of the absurd. 🌀🌑🔮
+    Whispers of twilight cascade through the velvet echoes, where shadows pirouette on the fringes of forgotten murmurs...
+    (truncated for brevity)
+    🌀🌑🔮
     `;
 
   // Key for localStorage
   const LOCAL_STORAGE_KEY = 'availableQuestions';
 
-  // Helper Functions
   const loadQuestions = () => {
     const storedQuestions = localStorage.getItem(LOCAL_STORAGE_KEY);
     if (storedQuestions) {
@@ -45,7 +40,7 @@ function App() {
         return JSON.parse(storedQuestions);
       } catch (error) {
         console.error("Failed to parse stored questions:", error);
-        return null;
+        localStorage.removeItem(LOCAL_STORAGE_KEY);
       }
     }
     return null;
@@ -61,7 +56,7 @@ function App() {
     if (stored && Array.isArray(stored)) {
       setAvailableQuestions(stored);
     } else {
-      const combined = [...questionsData.genuine, ...questionsData.weird];
+      const combined = [...questionsData.questions]; // Single merged array with many questions
       setAvailableQuestions(combined);
     }
   }, []);
@@ -73,7 +68,8 @@ function App() {
         availableQuestions[Math.floor(Math.random() * availableQuestions.length)]
       );
     } else {
-      const combined = [...questionsData.genuine, ...questionsData.weird];
+      // Reset to all questions if pool is empty
+      const combined = [...questionsData.questions];
       setAvailableQuestions(combined);
     }
 
@@ -100,9 +96,7 @@ function App() {
     }, 2000);
   };
 
-  // Replace manual confetti with canvas-confetti
   const generateConfetti = () => {
-    // First burst
     confetti({
       particleCount: 150,
       spread: 80,
@@ -111,7 +105,6 @@ function App() {
       shapes: ['circle', 'square', 'triangle'],
     });
 
-    // Second burst from left
     confetti({
       particleCount: 100,
       spread: 70,
@@ -120,7 +113,6 @@ function App() {
       shapes: ['circle'],
     });
 
-    // Third burst from right
     confetti({
       particleCount: 100,
       spread: 70,
@@ -129,19 +121,16 @@ function App() {
       shapes: ['square'],
     });
 
-    // Highlight flash
     setHighlightFlash(true);
     setTimeout(() => {
       setHighlightFlash(false);
     }, 600);
 
-    // Shimmer text
     setTimeout(() => {
       setShimmerText(true);
       setTimeout(() => setShimmerText(false), 1500);
     }, 800);
 
-    // Shake container
     setShakeContainer(true);
     setTimeout(() => setShakeContainer(false), 600);
   };
@@ -156,42 +145,40 @@ function App() {
 
     setIsSpinning(true);
 
+    const containerElem = document.querySelector('.question-container');
+    containerElem.classList.add('spinning');
+
     // Create ripple effect
     const button = e.currentTarget;
     const ripple = document.createElement('span');
     ripple.classList.add('ripple');
 
-    // Calculate position
     const rect = button.getBoundingClientRect();
     const size = Math.max(rect.width, rect.height);
     ripple.style.width = ripple.style.height = `${size}px`;
     ripple.style.left = `${e.clientX - rect.left - size / 2}px`;
     ripple.style.top = `${e.clientY - rect.top - size / 2}px`;
 
-    // Append ripple to button
     button.appendChild(ripple);
 
-    // Remove ripple after animation
     ripple.addEventListener('animationend', () => {
       ripple.remove();
     });
 
-    // Add 'pressed' class to trigger simple animation and remove it after 300ms
     button.classList.add('pressed');
     setTimeout(() => {
       button.classList.remove('pressed');
     }, 300);
 
     const questionElem = document.querySelector('.question-display');
-
     const totalSpins = 6;
     let count = 0;
-
     const delays = [0, 50, 100, 200, 400];
 
     const spinIteration = () => {
       if (count >= totalSpins) {
         setIsSpinning(false);
+        containerElem.classList.remove('spinning');
         return;
       }
 
@@ -207,12 +194,8 @@ function App() {
           newPool.splice(randomIndex, 1);
           setAvailableQuestions(newPool);
           if (newPool.length === 0) {
-            // Reset to all questions if pool is empty
-            const combinedQuestions = [
-              ...questionsData.genuine,
-              ...questionsData.weird
-            ];
-            setAvailableQuestions(combinedQuestions);
+            const combined = [...questionsData.questions];
+            setAvailableQuestions(combined);
           }
           generateConfetti();
         }
@@ -229,6 +212,7 @@ function App() {
             setTimeout(spinIteration, delay);
           } else {
             setIsSpinning(false);
+            containerElem.classList.remove('spinning');
           }
           count++;
         }, 200);
@@ -252,7 +236,9 @@ function App() {
         <h1>Georgia's Question of the Day!</h1>
         <div className={`question-container ${shakeContainer ? 'shake' : ''}`}>
           {highlightFlash && <div className="highlight-flash"></div>}
-          <p className={`question-display ${shimmerText ? 'shimmer-text' : ''}`}>{currentQuestion}</p>
+          <p ref={questionRef} className={`question-display ${shimmerText ? 'shimmer-text' : ''}`}>
+            {currentQuestion}
+          </p>
         </div>
         <button
           className="pull-lever-btn"
