@@ -1,3 +1,5 @@
+/* App.css */
+
 @import url('https://fonts.googleapis.com/css2?family=Luckiest+Guy&display=swap');
 
 html, body {
@@ -8,11 +10,10 @@ html, body {
 }
 
 body {
-  /* Vibrant radial gradient with smooth outward movement */
   background: radial-gradient(circle, 
     #ff69b4, #ff4d4d, #6c00fa, #4dfcff, #42f59e, #f093fb, #f5576c);
   background-size: 200% 200%;
-  animation: radialExpand 3s infinite alternate ease-in-out; /* Dynamic outward movement */
+  animation: radialExpand 3s infinite alternate ease-in-out;
 }
 
 @keyframes radialExpand {
@@ -30,7 +31,6 @@ body {
   }
 }
 
-/* Add a subtle decorative overlay using pseudo-element if you like */
 body::before {
   content: "";
   position: absolute;
@@ -63,7 +63,6 @@ body::before {
   animation: explode 2s forwards;
 }
 
-/* Adjusted background of .App-header and .Main-page to transparent so the animated body background shows through */
 .App-header {
   background: transparent;
   height: 100vh;
@@ -315,5 +314,3 @@ body::before {
     box-shadow: 0 0 15px rgba(240,147,251,0.6), 0 0 25px rgba(245,87,108,0.6);
   }
 }
-
-/* The rest of your styles remain unchanged */

@@ -1,7 +1,7 @@
 // App.js
 
 import { useState, useEffect, useRef } from 'react';
-import confetti from 'canvas-confetti'; // Import canvas-confetti
+import confetti from 'canvas-confetti';
 import logo from './assets/logo.png';
 import welcome from './assets/welcome.m4a';
 import spin from './assets/spin.m4a';
@@ -56,7 +56,7 @@ function App() {
     if (stored && Array.isArray(stored)) {
       setAvailableQuestions(stored);
     } else {
-      const combined = [...questionsData.questions]; // Single merged array with many questions
+      const combined = [...questionsData.questions];
       setAvailableQuestions(combined);
     }
   }, []);
